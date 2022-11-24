@@ -1,9 +1,18 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": "..",
+  "coverageReporters": ["json"],
+  "coverageDirectory": "coverage/e2e",
+  "collectCoverageFrom": ["src/**"],
+  "coveragePathIgnorePatterns": [".module.ts$", ".spec.ts$"],
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testRegex": ".e2e.spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^@modules/(.*)$": "<rootDir>/src/modules/$1",
+    "^@shared/(.*)$": "<rootDir>/src/shared/$1",
+    "^@config/(.*)$": "<rootDir>/src/config/$1"
   }
 }

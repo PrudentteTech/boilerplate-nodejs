@@ -10,6 +10,6 @@ export class AppService {
   }
 
   getReadyz(): Promise<HealthCheckResult> {
-    return this.health.check([() => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024)]);
+    return this.health.check([]);
   }
 }

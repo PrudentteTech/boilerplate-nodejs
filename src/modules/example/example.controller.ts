@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { TestController, TestControllerResponse } from './dtos/test-controller.dto';
@@ -10,8 +10,8 @@ export class ExampleController {
   constructor(private readonly exampleService: ExampleService) {}
 
   @ApiOperation({ summary: 'Descrição' })
-  @ApiResponse({ status: 200, type: TestControllerResponse })
-  @Get('/teste')
+  @ApiResponse({ status: 201, type: TestControllerResponse })
+  @Post('/teste')
   test(@Body() data: TestController): TestControllerResponse {
     return data;
   }
