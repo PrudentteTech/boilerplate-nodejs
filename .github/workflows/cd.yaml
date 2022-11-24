@@ -1,0 +1,66 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  CD:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    env:
+      # Nome do serviço para a notificação
+      NAME: serviceName Service
+      # Nome do repositório
+      ECR_REPOSITORY: serviceName-service
+      # Nome do deployment
+      K8S_DEPLOYMENT: serviceName-service
+      # Nome do container
+      K8S_CONTAINER: serviceName-service
+      # Nome do namespace
+      K8S_NAMESPACE: default
+      IMAGE_TAG: ${{ github.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push the image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          LATEST_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+        run: |
+          # Build a docker container and push it to ECR 
+          docker build -t $RELEASE_IMAGE .
+          echo "Pushing image to ECR..."
+          docker push $RELEASE_IMAGE
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+          # Build a docker container and push it to ECR with "Latest" tag
+          docker build -t $LATEST_IMAGE .
+          echo "Pushing image to ECR..."
+          docker push $LATEST_IMAGE
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+      - name: Deploy to Kubernetes Cluster
+        uses: kodermax/kubectl-aws-eks@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: 'v1.23.6'
+          RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+        with:
+          args: set image deployment ${{ env.K8S_DEPLOYMENT }} ${{ env.K8S_CONTAINER }}=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} -n ${{ env.K8S_NAMESPACE }}

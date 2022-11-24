@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+      - 'fix/*'
+      - 'refactor/*'
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 16.14.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.14.0'
+
+      - name: Dependencie Cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Installing dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          node --version
+          npm --version
+          npm ci
+
+      - name: Run TS Check
+        run: yarn tsc
+
+      - name: Run ESLint Check
+        run: npm run style:lint
+
+      - name: Run Prettier Check
+        run: npm run style:prettier
+
+      - name: Run Build
+        run: npm run build
+
+      - name: Run E2E Test
+        run: npm run test:e2e
