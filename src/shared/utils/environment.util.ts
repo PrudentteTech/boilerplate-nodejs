@@ -1,4 +1,10 @@
-class EnvironmentUtil {
+import * as dotenv from 'dotenv';
+import { Injectable } from '@nestjs/common';
+
+dotenv.config();
+
+@Injectable()
+export class EnvironmentUtil {
   private enviroment_data = process.env.NODE_ENV?.trim() as EnumEnvironment;
 
   get enviroment() {
