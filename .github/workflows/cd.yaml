@@ -12,13 +12,13 @@ jobs:
 
     env:
       # Nome do serviço para a notificação
-      NAME: serviceName Service
+      NAME: SERVICE_NAME Service
       # Nome do repositório
-      ECR_REPOSITORY: serviceName-service
+      ECR_REPOSITORY: SERVICE_NAME-service
       # Nome do deployment
-      K8S_DEPLOYMENT: serviceName-service
+      K8S_DEPLOYMENT: SERVICE_NAME-service
       # Nome do container
-      K8S_CONTAINER: serviceName-service
+      K8S_CONTAINER: SERVICE_NAME-service
       # Nome do namespace
       K8S_NAMESPACE: default
       IMAGE_TAG: ${{ github.sha }}
