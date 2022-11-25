@@ -6,7 +6,7 @@ export class AppService {
   constructor(private health: HealthCheckService, private memory: MemoryHealthIndicator) {}
 
   getHello(): string {
-    return 'Hello from {{service name}} service';
+    return 'Hello from SERVICE_NAME service';
   }
 
   getReadyz(): Promise<HealthCheckResult> {

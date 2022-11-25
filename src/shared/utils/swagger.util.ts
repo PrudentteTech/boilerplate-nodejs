@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 export class SwaggerUtils {
-  private title = '{{serviço}} Service';
+  private title = 'SERVICE_NAME Service';
   private version = '1';
   private description = ``;
 

@@ -4,7 +4,7 @@ import { ElasticsearchTransport } from 'winston-elasticsearch';
 import Environment from '../../utils/environment.util';
 import elasticsearch_config from '../../../config/elasticsearch.config';
 
-export const service_name = '{{service name}}-service';
+export const service_name = 'SERVICE_NAME-service';
 export const environment = Environment.enviroment;
 
 export let apm: APM.Agent;

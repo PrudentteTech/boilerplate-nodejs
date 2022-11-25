@@ -17,7 +17,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('(GET) /', () => {
-    return request(app.getHttpServer()).get('/').expect(200).expect('Hello from {{service name}} service');
+    return request(app.getHttpServer()).get('/').expect(200).expect('Hello from SERVICE_NAME service');
   });
 
   it('(GET) /readyz', () => {
