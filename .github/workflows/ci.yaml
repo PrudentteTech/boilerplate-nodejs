@@ -22,13 +22,14 @@ jobs:
           node-version: '16.14.0'
 
       - name: Dependencie Cache
+        id: npm-cache
         uses: actions/cache@v2
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Installing dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: |
           node --version
           npm --version
